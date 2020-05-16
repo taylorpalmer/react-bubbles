@@ -16,23 +16,26 @@ const ColorList = ({ colors, updateColors }) => {
     setColorToEdit(color);
   };
 
-  const saveEdit = (e) => {
+  const saveEdit = (e, { colors }) => {
     e.preventDefault();
     // Make a put request to save your updated color
     // think about where will you get the id from...
     // where is is saved right now?
+    console.log("edit: ", colors);
     axios
       .put(`http://localhost:5000/api/colors/${colors.id}`, colorToEdit)
       .then((res) => {
         console.log("put res: ", res);
-        updateColors((state) =>
-          state.map((colors) => {
-            if (colors.id === colors.id) {
-              return res.data;
-            } else {
-              return colorToEdit;
-            }
-          })
+        updateColors(
+          res.data
+          // (state) =>
+          // state.map((color) => {
+          //   if (color.id === color.id) {
+          //     return res.data;
+          //   } else {
+          //     return colorToEdit;
+          //   }
+          // })
         );
         colors.history.push(`/bubblepage`);
       })
@@ -41,19 +44,18 @@ const ColorList = ({ colors, updateColors }) => {
       });
   };
 
-  const deleteColor = (color, event) => {
+  const deleteColor = (color) => {
     // make a delete request to delete this color
-    event.preventDefault();
 
-    axios
-      .delete(`http://localhost:5000/api/colors/${color.match.params.id}`)
-      .then((res) => {
-        console.log("delete res: ", res);
-        updateColors((state) =>
-          state.filter((color) => color.id != colors.match.params.id)
-        );
-        colors.history.push(`/bubblepage`);
-      });
+    axios.delete(`http://localhost:5000/api/colors/${color.id}`).then((res) => {
+      console.log("delete res: ", res);
+      updateColors(
+        res.data
+        // (state) =>
+        // state.filter((color) => color.id !== color.match.params.id)
+      );
+      color.history.push(`/bubblepage`);
+    });
   };
 
   return (
