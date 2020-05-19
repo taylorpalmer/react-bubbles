@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axiosWithAuth from "./axiosWithAuth";
 
 const initialColor = {
   color: "",
@@ -16,28 +16,16 @@ const ColorList = ({ colors, updateColors }) => {
     setColorToEdit(color);
   };
 
-  const saveEdit = (e, { colors }) => {
+  const saveEdit = (e) => {
     e.preventDefault();
     // Make a put request to save your updated color
     // think about where will you get the id from...
     // where is is saved right now?
-    console.log("edit: ", colors);
-    axios
-      .put(`http://localhost:5000/api/colors/${colors.id}`, colorToEdit)
+
+    axiosWithAuth()
+      .put(`/colors/${colorToEdit.id}`, colorToEdit)
       .then((res) => {
-        console.log("put res: ", res);
-        updateColors(
-          res.data
-          // (state) =>
-          // state.map((color) => {
-          //   if (color.id === color.id) {
-          //     return res.data;
-          //   } else {
-          //     return colorToEdit;
-          //   }
-          // })
-        );
-        colors.history.push(`/bubblepage`);
+        console.log("put: ", res);
       })
       .catch((err) => {
         console.log("Error is: ", err);
@@ -47,15 +35,14 @@ const ColorList = ({ colors, updateColors }) => {
   const deleteColor = (color) => {
     // make a delete request to delete this color
 
-    axios.delete(`http://localhost:5000/api/colors/${color.id}`).then((res) => {
-      console.log("delete res: ", res);
-      updateColors(
-        res.data
-        // (state) =>
-        // state.filter((color) => color.id !== color.match.params.id)
-      );
-      color.history.push(`/bubblepage`);
-    });
+    axiosWithAuth()
+      .delete(`/colors/${color.id}`)
+      .then((res) => {
+        console.log("delete res: ", res);
+      })
+      .catch((err) => {
+        console.log("delete: ", err);
+      });
   };
 
   return (
