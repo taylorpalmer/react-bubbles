@@ -8,8 +8,9 @@ const initialColor = {
 
 const ColorList = ({ colors, updateColors }) => {
   console.log(colors);
-  const [editing, setEditing] = useState(false);
+
   const [colorToEdit, setColorToEdit] = useState(initialColor);
+  const [editing, setEditing] = useState(false);
 
   const editColor = (color) => {
     setEditing(true);
@@ -29,7 +30,8 @@ const ColorList = ({ colors, updateColors }) => {
       })
       .catch((err) => {
         console.log("Error is: ", err);
-      });
+      })
+      .finally(window.location.reload());
   };
 
   const deleteColor = (color) => {
@@ -39,10 +41,13 @@ const ColorList = ({ colors, updateColors }) => {
       .delete(`/colors/${color.id}`)
       .then((res) => {
         console.log("delete res: ", res);
+        updateColors(colorToEdit);
+        setEditing(false);
       })
       .catch((err) => {
         console.log("delete: ", err);
-      });
+      })
+      .finally(window.location.reload());
   };
 
   return (
